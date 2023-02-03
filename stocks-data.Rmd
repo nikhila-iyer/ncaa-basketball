@@ -1,0 +1,68 @@
+---
+title: "final_project-stocks"
+author: "Nikhila Iyer"
+date: "2023-02-03"
+output: html_document
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(flipbookr)
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+library(ggplot2)
+```
+
+```{r echo=FALSE}
+options("getSymbols.warning4.0"=FALSE)
+options("getSymbols.yahoo.warning"=FALSE)
+
+tickers = c("NKE","ADDYY","UA")
+
+for (i in tickers){
+  getSymbols(i,
+             from = "2016-03-23",
+             to = "2022-12-01")}
+
+x <- list(title = "date")
+y <- list(title = "value")
+
+stock <- data.frame(NKE$NKE.Adjusted,
+                    ADDYY$ADDYY.Adjusted,
+                    UA$UA.Adjusted)
+
+stock <- data.frame(stock,rownames(stock))
+colnames(stock) <- append(tickers,'Dates')
+
+stock$date<-as.Date(stock$Dates,"%Y-%m-%d")
+
+write.csv(stock, "/Users/nikhilaiyer/Documents/GRAD SCHOOL/y2s2/[ANLY560] Time Series/final-project/sponsor-stocks.csv", row.names=FALSE)
+```
+
+```{r, echo=FALSE}
+g4 <- ggplot(stock, aes(x=date)) +
+  geom_line(aes(y=NKE), color="#263c6d")+
+  geom_line(aes(y=ADDYY), color="black")+
+  geom_line(aes(y=UA), color="#E7182C")+
+   labs(
+    title = "Stock Prices for Athletic Apparel Companies",
+    subtitle = "From 2013-2022",
+    x = "Date",
+    y = "Adjusted Closing Prices")+
+    guides(colour=guide_legend(title="Sports Apparel Companies"))
+
+ggplotly(g4) %>%
+  layout(hovermode = "x")
+```
+
