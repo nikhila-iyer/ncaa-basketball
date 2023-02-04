@@ -1,0 +1,45 @@
+---
+title: "sponsor-data"
+author: "Nikhila Iyer"
+date: "2023-02-04"
+output: html_document
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(flipbookr)
+library(tidyverse)
+library(ggplot2)
+library(forecast)
+library(astsa) 
+library(xts)
+library(tseries)
+library(fpp2)
+library(fma)
+library(lubridate)
+library(TSstudio)
+library(quantmod)
+library(tidyquant)
+library(plotly)
+library(ggplot2)
+```
+
+```{r}
+school_sponsor.df <- read.csv("/Users/nikhilaiyer/Documents/GRAD SCHOOL/y2s2/[ANLY560] Time Series/2school_sponsors-2022.csv")
+college_loc.df <- read.csv("/Users/nikhilaiyer/Documents/GRAD SCHOOL/y2s2/[ANLY560] Time Series/ipeds_map.csv")
+```
+
+```{r}
+#colnames(school_sponsor.df)
+final_schools.df <- merge(school_sponsor.df, college_loc.df, by.x = "School", by.y = "Name", all.x = TRUE) %>%
+  select('School', 'Conference', 'Sponsor_2022', 'longitude', 'latitude', 'Control.of.institution')
+
+final_schools.df[17, "latitude"] <- 33.5100
+final_schools.df[17, "longitude"] <- -112.1289
+final_schools.df[17, "Control.of.institution"] <- 'Private'
+```
+
+```{r}
+write.csv(final_schools.df, "/Users/nikhilaiyer/Documents/GRAD SCHOOL/y2s2/[ANLY560] Time Series/final-project/schools.csv", row.names=FALSE)
+```
+
